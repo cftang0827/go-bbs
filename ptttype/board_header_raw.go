@@ -1,6 +1,8 @@
 package ptttype
 
 import (
+	"encoding/binary"
+	"os"
 	"unsafe"
 
 	"github.com/PichuChen/go-bbs/types"
@@ -43,5 +45,26 @@ type BoardHeaderRaw struct {
 	Pad4               [40]byte
 }
 
+var BOARD_RAW = BoardHeaderRaw{}
+
 //Require updating SHM_VERSION if BOARD_HEADER_RAW_SZ is changed.
 const BOARD_HEADER_RAW_SZ = unsafe.Sizeof(BoardHeaderRaw{})
+
+func NewBoardHeaderRaw() *BoardHeaderRaw {
+	return &BoardHeaderRaw{}
+}
+
+func NewBoardHeaderRawWithFile(file *os.File) ([]*BoardHeaderRaw, error) {
+	raws := make([]*BoardHeaderRaw, 0)
+
+	for i := 0; i < 2; i++ {
+		boardHeaderRaw := &BoardHeaderRaw{}
+		err := binary.Read(file, binary.LittleEndian, boardHeaderRaw)
+		if err != nil {
+			return nil, err
+		}
+		raws = append(raws, boardHeaderRaw)
+	}
+
+	return raws, nil
+}
