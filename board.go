@@ -125,12 +125,10 @@ func NewBoardHeaderWithByte(data []byte) (*BoardHeader, error) {
 	ret.Title = Big5ToUtf8(bytes.Split(data[PosOfPTTBoardTitle:PosOfPTTBoardTitle+PTT_BTLEN+1], []byte("\x00"))[0]) // Be careful about C-string end char \0
 	ret.BM = string(bytes.Trim(data[PosOfPTTBM:PosOfPTTBM+PTT_IDLEN*3+3], "\x00"))
 	ret.Brdattr = binary.LittleEndian.Uint32(data[PosOfBrdAttr : PosOfBrdAttr+4])
-	ret.VoteLimitPosts = uint8(data[PosOfVoteLimitPosts])
 	ret.VoteLimitLogins = uint8(data[PosOfVoteLimitLogins])
 	ret.ChessCountry = string(bytes.Trim(data[PosOfChessCountry:PosOfChessCountry+1], "\x00"))
 	bUpdateInt := binary.LittleEndian.Uint32(data[PosOfBUpdate : PosOfBUpdate+4])
 	ret.BUpdate = time.Unix(int64(bUpdateInt), 0)
-	ret.PostLimitPosts = uint8(data[PosOfPostLimitPosts])
 	ret.PostLimitLogins = uint8(data[PosOfPostLimitLogins])
 	ret.BVote = uint8(data[PosOfBVote])
 	vTime := binary.LittleEndian.Uint32(data[PosOfVTime : PosOfVTime+4])
